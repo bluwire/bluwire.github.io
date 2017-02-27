@@ -1,29 +1,89 @@
 <!DOCTYPE html>
 <html>
+<div class="container-fluid">
 
-<head>
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cyborg/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script>
-        $(document).ready(function() {
+    <head>
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cyborg/bootstrap.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="styles.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.6.0/d3.min.js"></script>
+        <script>
+            var width = Math.max(960, innerWidth),
+                height = Math.max(500, innerHeight);
 
-        });
-    </script>
-</head>
+            var x1 = width / 2,
+                y1 = height / 2,
+                x0 = x1,
+                y0 = y1,
+                i = 0,
+                r = 200,
+                τ = 2 * Math.PI;
+
+            var canvas = d3.select("body").append("canvas")
+                .attr("width", width)
+                .attr("height", height)
+                .on("ontouchstart" in document ? "touchmove" : "mousemove", move);
+
+            var context = canvas.node().getContext("2d");
+            context.globalCompositeOperation = "lighter";
+            context.lineWidth = 2;
+
+            d3.timer(function() {
+                context.clearRect(0, 0, width, height);
+
+                var z = d3.hsl(++i % 360, 1, .5).rgb(),
+                    c = "rgba(" + z.r + "," + z.g + "," + z.b + ",",
+                    x = x0 += (x1 - x0) * .1,
+                    y = y0 += (y1 - y0) * .1;
+
+                d3.select({}).transition()
+                    .duration(2000)
+                    .ease(Math.sqrt)
+                    .tween("circle", function() {
+                        return function(t) {
+                            context.strokeStyle = c + (1 - t) + ")";
+                            context.beginPath();
+                            context.arc(x, y, r * t, 0, τ);
+                            context.stroke();
+                        };
+                    });
+            });
+
+            function move() {
+                var mouse = d3.mouse(this);
+                x1 = mouse[0];
+                y1 = mouse[1];
+                d3.event.preventDefault();
+            }
+        </script>
+        <script>
+            $(document).ready(function() {
+
+            });
+        </script>
+    </head>
 
 
-<body>
-    <div class="container-fluid">
+    <body class="body">
+
         <div class="row">
             <div class="col-12">
                 <a href="https://bluwire.github.io">
-                    <img class="center-block" src="https://i.imgur.com/C0hHJUR.png" onmouseover="this.src='https://i.imgur.com/kSBDC8i.gif';" onmouseout="this.src='https://i.imgur.com/C0hHJUR.png';">
+                    <img class="center-block img-responsive" src="https://i.imgur.com/C0hHJUR.png" onmouseover="this.src='https://i.imgur.com/kSBDC8i.gif';" onmouseout="this.src='https://i.imgur.com/C0hHJUR.png';">
                     </img>
                 </a>
             </div>
-</body>
-</div>
+        </div>
+        <div class="row">
+            <div class="col-12 bgimg">
+                <p class="text-center intro">Hello.</p>
+                <p class="text-center intro">My name is Zachary Braun.</p>
+                <p class="text-center intro">I code things.</p>
+            </div>
+        </div>
+
+    </body>
 </div>
 
 </html>
